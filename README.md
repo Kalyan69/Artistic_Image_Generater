@@ -69,4 +69,4 @@ This project is licensed under the [MIT License](LICENSE).
 - Bootstrap for the front-end styling.
 - Flask for the web framework.
 - Pillow (PIL) for image processing.
-- OpenCV for background removal.
+- OpenCV for background removal...
