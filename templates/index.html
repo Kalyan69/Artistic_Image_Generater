@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artistic Image Generator</title>
+    <!-- Include Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+
+        h1 {
+            color: #007bff;
+        }
+
+        #formColumn {
+            max-width: 400px;
+            margin: 20px auto;
+        }
+
+        #resultColumn {
+            margin: 20px auto;
+        }
+
+        form {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            margin-top: 10px;
+        }
+
+        button {
+            margin-top: 20px;
+        }
+
+        #outputImage {
+            margin-top: 20px;
+            max-width: 200px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-left: 160px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="text-center">Artistic Image Generator</h1>
+
+        <div class="row">
+            <div id="formColumn" class="col-md-6">
+                <h2 class="text-center">Input:</h2>
+                <form id="imageForm" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="imageInput" class="form-label">Select Image:</label>
+                        <input type="file" class="form-control" id="imageInput" name="image" accept="image/*" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="filterSelect" class="form-label">Select Filter:</label>
+                        <select class="form-select" id="filterSelect" name="filter" required>
+                            <option value="contour">Contour</option>
+                            <option value="blur">Blur</option>
+                            <option value="detail">Detail</option>
+                            <option value="edge_enhance">Edge Enhance</option>
+                            <option value="emboss">Emboss</option>
+                            <option value="sharpen">Sharpen</option>
+                            <option value="smooth">Smooth</option>
+                            <option value="box_blur">Box Blur</option>
+                            <option value="gaussian_blur">Gaussian Blur</option>
+                            <option value="unsharp_mask">Unsharp Mask</option>
+                            <option value="min_filter">Min Filter</option>
+                            <option value="max_filter">Max Filter</option>
+                            <option value="median_filter">Median Filter</option>
+                            <option value="mode_filter">Mode Filter</option>
+                            <option value="find_edges">Find Edges</option>
+                            <!-- Add more filter options as needed -->
+                        </select>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="backgroundRemoval" name="backgroundRemoval">
+                        <label class="form-check-label" for="backgroundRemoval">Apply Background Removal</label>
+                    </div>
+
+                    <button type="button" class="btn btn-success" onclick="generateArtisticImage()">Generate Artistic Image</button>
+                </form>
+            </div>
+
+            <div id="resultColumn" class="col-md-6">
+                <div class="mb-3">
+                    <h2 class="text-center">Result:</h2>
+                    <img id="outputImage" class="img-fluid" alt="Artistic Image">
+                    <button type="button" class="btn btn-success" onclick="downloadArtisticImage()">Download Result</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.7/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-alpha2/dist/js/bootstrap.min.js"></script>
+
+    <script>
+        function downloadArtisticImage() {
+            const outputImage = document.getElementById("outputImage");
+            const imageSrc = outputImage.src;
+
+            if (imageSrc) {
+                const link = document.createElement('a');
+                link.href = imageSrc;
+                link.download = 'artistic_image.png';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } else {
+                console.error('No image to download.');
+            }
+        }
+    </script>
+
+    <script>
+        function generateArtisticImage() {
+            const form = document.getElementById("imageForm");
+            const formData = new FormData(form);
+
+            fetch('/process_image', {
+                method: 'POST',
+                body: formData,
+            })
+                .then(response => response.blob())
+                .then(blob => {
+                    const url = URL.createObjectURL(blob);
+                    document.getElementById("outputImage").src = url;
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+
+</html>
